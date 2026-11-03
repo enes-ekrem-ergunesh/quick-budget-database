@@ -1,8 +1,12 @@
--- User account and auth sessions
+-- update_user_id_column_to_uuid
+-- While its not supported to alter the column type or order the colums, we will drop and recreate the tables
+
+drop table auth_session;
+drop table user_account;
 
 create table user_account
 (
-    id            integer generated always as identity
+    id            uuid         not null
         constraint user_account_pk
             primary key,
     email         varchar(320) not null
@@ -11,6 +15,7 @@ create table user_account
     password_hash text,
     created_at    timestamp    not null,
     updated_at    timestamp
+
 );
 
 alter table user_account
@@ -24,7 +29,7 @@ create table auth_session
     id                     uuid      not null
         constraint auth_session_pk
             primary key,
-    user_id                integer   not null
+    user_id                uuid      not null
         constraint auth_session_user_account_id_fk
             references user_account,
     refresh_token_hash     text      not null,
@@ -38,3 +43,4 @@ create table auth_session
 
 alter table auth_session
     owner to qbudget;
+
